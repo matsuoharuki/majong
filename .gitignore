@@ -1,3 +1,13 @@
 .DS_Store
+.settings
+.classpath
+.project
+.vscode
+.metadata
+bin
+*.code-workspace
+.DS_Store
+
 
 build
+.gradle
