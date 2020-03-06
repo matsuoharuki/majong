@@ -50,6 +50,24 @@ public class Judge{
         return false ;
     }
     boolean menzentsumo( int hai[] ){
-        return !sfc.furo ;
+        if( sfc.furo==false && sfc.agarikata==false )
+            return true ;
+        else
+            return false ;
     }
+    boolean ipeko( int hai[] ){
+        if( sfc.furo )
+            return false ;
+        int i,j;
+        for( i=2; i<12; i+=3 ){
+            for( j=3; i+j<14; j+=3 ){
+                if( hai[i]=hai[j]
+                    && hai[i+1]=hai[j+1]
+                    && hai[i+2]=hai[j+2] )
+                    return true ;
+            }
+        }
+        return false ;
+    }
+
 }
