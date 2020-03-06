@@ -17,7 +17,8 @@ plugins {
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    //jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -26,7 +27,22 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    //Deeplearning4j
+    //    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'org.deeplearning4j:deeplearning4j-core:0.4-rc3.8'
+    compile 'org.deeplearning4j:deeplearning4j-nlp:0.4-rc3.8'
+    compile 'org.deeplearning4j:deeplearning4j-ui:0.4-rc3.8'
+    compile 'com.google.guava:guava:19.0'
+    compile 'org.nd4j:nd4j-x86:0.4-rc3.8' // Nd4j Cpu
+    compile 'org.nd4j:canova-nd4j-image:0.0.0.14'
+    compile 'org.nd4j:canova-nd4j-codec:0.0.0.14'
+
+    // Support for reading and writing YAML-encoded data via Jackson abstractions.
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.5.1'
 }
+
+
 
 // Define the main class for the application
 mainClassName = 'majong.MajongMain'
