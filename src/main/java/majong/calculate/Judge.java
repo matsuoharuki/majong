@@ -1,9 +1,9 @@
 package majong.calculate;
 
 public class Judge{
-
+    StatForCul sfc;
     void init(){
-
+        
     }
 
     boolean yakuhai( int hai[] ){
@@ -31,23 +31,25 @@ public class Judge{
     }
 
     boolean pinfu( int hai[] ){
-        if( StatForCul.furo==1 )
+        if( sfc.furo )
             return false;
         if( hai[0]==5 || hai[0]==6 || hai[0]==7 )
             return false ;
         if( hai[2]==hai[3] || hai[5]==hai[6] || hai[8]==hai[9] || hai[11]==hai[12] ) 
             return false ;
-        if( StatForCul.agarihai==hai[2]
-             || StatForCul.agarihai==hai[4]
-             || StatForCul.agarihai==hai[5]
-             || StatForCul.agarihai==hai[7] 
-             || StatForCul.agarihai==hai[8] 
-             || StatForCul.agarihai==hai[10] 
-             || StatForCul.agarihai==hai[11] 
-             || StatForCul.agarihai==hai[13] )
+        if( sfc.agarihai==hai[2]
+             || sfc.agarihai==hai[4]
+             || sfc.agarihai==hai[5]
+             || sfc.agarihai==hai[7] 
+             || sfc.agarihai==hai[8] 
+             || sfc.agarihai==hai[10] 
+             || sfc.agarihai==hai[11] 
+             || sfc.agarihai==hai[13] )
              return true ;
 
         return false ;
     }
-
+    boolean menzentsumo( int hai[] ){
+        return !sfc.furo ;
+    }
 }
