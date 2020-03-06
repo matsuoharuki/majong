@@ -18,13 +18,13 @@ import java.io.FileInputStream;
 /**
  * Created by Hashiwa on 2016/04/03.
  */
-public class CNNMnistReader {
+public class HandRecongnizer {
     public static void exec() throws Exception {
-        String confFile = "logs/convolution.json";
-        String binFile = "logs/convolution.bin";
+      String binFile = "src/main/resources/model/convolution.bin";
+      String confFile = "src/main/resources/model/convolution.json";
         int outputNum = 10;
 
-        Logger log = LoggerFactory.getLogger(CNNMnistReader.class);
+        Logger log = LoggerFactory.getLogger(HandRecongnizer.class);
 
         log.info("Load stored model ...");
         MultiLayerConfiguration confFromJson = MultiLayerConfiguration.fromJson(FileUtils.readFileToString(new File(confFile)));

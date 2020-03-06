@@ -41,9 +41,9 @@ import java.util.*;
  * http://caffe.berkeleyvision.org/tutorial/layers.html
  * https://github.com/BVLC/caffe/blob/master/examples/mnist/lenet.prototxt
  */
-public class CNNMnistCreator {
+public class NeuralNetworkGenerator {
 
-  private static final Logger log = LoggerFactory.getLogger(CNNMnistCreator.class);
+  private static final Logger log = LoggerFactory.getLogger(NeuralNetworkGenerator.class);
 
   public static void exec() throws Exception {
     int numRows = 28;
@@ -61,8 +61,8 @@ public class CNNMnistCreator {
     DataSet trainInput;
     List<INDArray> testInput = new ArrayList<>();
     List<INDArray> testLabels = new ArrayList<>();
-    String binFile = "logs/convolution.bin";
-    String confFile = "logs/convolution.json";
+    String binFile = "src/main/resources/model/convolution.bin";
+    String confFile = "src/main/resources/model/convolution.json";
 
     log.info("Load data....");
     DataSetIterator mnistIter = new MnistDataSetIterator(batchSize,numSamples, true);
