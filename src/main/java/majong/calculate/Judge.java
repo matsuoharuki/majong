@@ -69,5 +69,12 @@ public class Judge{
         }
         return false ;
     }
+    boolean toitoi( int hai[] ){
+        if( hai[2]==hai[3]
+            && hai[5]==hai[6]
+            && hai[8]==hai[9]
+            && hai[11]==hai[12] )
+            return true ;
+    }
 
 }
