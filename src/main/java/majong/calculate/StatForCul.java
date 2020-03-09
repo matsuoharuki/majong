@@ -17,6 +17,23 @@ public class StatForCul {
     public int hu;//符数
     public int score;//点数
 
+    public StatForCul(int agarihai,boolean agarikata,boolean furo,int dora,boolean richi,boolean ippatsu,boolean flag13,boolean flag7,int jikaze,int bakaze,int honba,int yaku,int hu,int score){
+        this.agarihai = agarihai;
+        this.agarikata = agarikata;
+        this.furo = furo;
+        this.dora = dora;
+        this.richi = richi;
+        this.ippatsu = ippatsu;
+        this.flag13 = flag13;
+        this.flag7 = flag7;
+        this.jikaze = jikaze;
+        this.bakaze = bakaze;
+        this.honba = honba;
+        this.yaku = yaku;
+        this.hu = hu;
+        this.score = score;
+    }
+
     public void importStat(){
         Scanner sc = new Scanner(System.in);
         System.out.println("上がり牌はなんですか？:");
@@ -40,7 +57,7 @@ public class StatForCul {
     }
 
     private boolean booler(String s){
-        if (s == 'y') return true;
+        if (s == "y") return true;
         else return false;
     }
 }
