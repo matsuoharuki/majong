@@ -48,12 +48,14 @@ public class Judge{
 
         return false ;
     }
+
     boolean menzentsumo( int hai[] ){
         if( sfc.furo==false && sfc.agarikata==false )
             return true ;
         else
             return false ;
     }
+
     boolean ipeko( int hai[] ){
         if( sfc.furo )
             return false ;
@@ -70,6 +72,7 @@ public class Judge{
         }
         return false ;
     }
+
     boolean toitoi( int hai[] ){
         //if( suankou ) return false ;
         if( hai[2]==hai[3]
@@ -79,6 +82,7 @@ public class Judge{
             return true ;
         return false;
     }
+
     boolean sanshokudoujun( int hai[] ){
         int i;
         int mentsu[] = { 2, 5, 8, 11 };
@@ -116,4 +120,18 @@ public class Judge{
         return false ;
     }
 
+    boolean chanta( int hai[] ){
+        if( ( hai[0] > 10 ) && ( hai[0] % 10 != 1 ) && ( hai[0] % 10 ) != 9 )
+            return false ;
+        int i ;
+        for( i=2; i<12; i++ ){
+            if( ( hai[i] > 10 ) && ( hai[i] % 10 != 1 ) && ( hai[i] % 10 ) != 9 ){
+                if( ( hai[i+2] > 10 ) && ( hai[i+2] % 10 != 1 ) && ( hai[i+2] % 10 ) != 9 )
+                    return false ;
+            }
+        }
+        return true ;
+    }
+
+    
 }
