@@ -32,7 +32,7 @@ public class Judge{
     boolean pinfu( int hai[] ){
         if( sfc.furo )
             return false;
-        if( hai[0]==5 || hai[0]==6 || hai[0]==7 )
+        if( hai[0]==5 || hai[0]==6 || hai[0]==7 || hai[0]==sfc.jikaze || hai[0]==sfc.bakaze )
             return false ;
         if( hai[2]==hai[3] || hai[5]==hai[6] || hai[8]==hai[9] || hai[11]==hai[12] ) 
             return false ;
@@ -59,6 +59,8 @@ public class Judge{
             return false ;
         int i,j;
         for( i=2; i<12; i+=3 ){
+            if( hai[i]==hai[i+1] )
+                continue ;
             for( j=3; i+j<14; j+=3 ){
                 if( hai[i]==hai[j]
                     && hai[i+1]==hai[j+1]
@@ -92,6 +94,23 @@ public class Judge{
                         && hai[ mentsu[(i+2)%4] ]/10 != hai[ mentsu[i%4] ]/10 )
                     return true ;
             }
+        }
+        return false ;
+    }
+
+    boolean ikkitsuukan( int hai[] ){
+        int i,j,k,cnt;
+        for( i=1; i<4; i++ ){
+            cnt = 0 ;
+            for( j=1; j<10; j++ ){
+                for( k=0; k<14; k++ ){
+                    if( hai[k]/10==i && hai[k]%10==j )
+                        cnt += 1 ;
+                        break;
+                }
+            }
+            if( cnt==9 )
+                return true ;
         }
         return false ;
     }
