@@ -9,9 +9,8 @@ public class Judge{
     boolean yakuhai( int hai[] ){
         //daisangen==Tまたはshousangen==TならFalseを返す処理
         int i;
+        int jihai[] = { 5, 6, 7, sfc.jikaze, sfc.bakaze };
         for( i=2; i<12; i+=3 ){
-            int jihai[] = { 5, 6, 7 };
-            //↑に自風と場風も追加すること
             for( int x: jihai ){
                 if( hai[i]==x && hai[i+1]==x && hai[i+1]==x )
                     return true ;
@@ -70,11 +69,31 @@ public class Judge{
         return false ;
     }
     boolean toitoi( int hai[] ){
+        //if( suankou ) return false ;
         if( hai[2]==hai[3]
             && hai[5]==hai[6]
             && hai[8]==hai[9]
             && hai[11]==hai[12] )
             return true ;
+        return false;
+    }
+    boolean sanshokudoujun( int hai[] ){
+        int i;
+        int mentsu[] = { 2, 5, 8, 11 };
+        for( i=0; i<4; i++ ){
+            if( hai[ mentsu[i%4] ]==hai[ mentsu[i%4]+1 ]
+                    && hai[ mentsu[(i+1)%4] ]==hai[ mentsu[(i+1)%4]+1 ]
+                    && hai[ mentsu[(i+2)%4] ]==hai[ mentsu[(i+2)%4]+1 ] )
+                return false ;
+            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4]%10 ]
+                    && hai[ mentsu[(i+1)%4] ]%10 == hai[ mentsu[(i+2)%4] ]%10 ){
+                if( hai[ mentsu[i%4] ]/10 != hai[ mentsu[(i+1)%4]/10 ]
+                        && hai[ mentsu[(i+1)%4] ]/10 != hai[ mentsu[(i+2)%4] ]/10
+                        && hai[ mentsu[(i+2)%4] ]/10 != hai[ mentsu[i%4] ]/10 )
+                    return true ;
+            }
+        }
+        return false ;
     }
 
 }
