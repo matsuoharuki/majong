@@ -104,9 +104,10 @@ public class Judge{
             cnt = 0 ;
             for( j=1; j<10; j++ ){
                 for( k=0; k<14; k++ ){
-                    if( hai[k]/10==i && hai[k]%10==j )
+                    if( hai[k]/10==i && hai[k]%10==j ){
                         cnt += 1 ;
                         break;
+                    }
                 }
             }
             if( cnt==9 )
