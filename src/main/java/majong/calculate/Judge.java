@@ -133,5 +133,25 @@ public class Judge{
         return true ;
     }
 
-    
+    boolean sananko( int hai[] ){
+        if( sfc.anko==3 )
+            return true;
+        else
+            return false;
+    }
+    boolean shousangen( int hai[] ){
+        int i,j;
+        if( hai[0]==5 || hai[0]==6 || hai[0]==7 ){
+            for( i=2; i<12; i+=3 ){
+                if( hai[i]==5 || hai[i]==6 || hai[i]==7 ){
+                    for( j=i+3; j<12; j+=3 ){
+                        if( hai[j]==5 || hai[j]==6 || hai[j]==7 )
+                            return true ;
+                    }
+                }
+            }
+        }
+        return false ;
+    }
+
 }
