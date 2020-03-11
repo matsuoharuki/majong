@@ -10,14 +10,14 @@ public class SignCul{
     
     public void signCul(){
         /*基本符*/ 
-        private int based_hu = 20;
+        int based_hu = 20;
 
-        if(pinfuTsumo()){
+        if(pinfuTsumo(this.sfc)){
             sfc.hu = 20;
         } else if(sfc.flag7){
             sfc.hu = 25;
         } else {
-        private int now_hu;
+        int now_hu;
         now_hu = based_hu;
         /* 面前加符*/
         if(!sfc.agarikata){
@@ -26,9 +26,9 @@ public class SignCul{
             if(!sfc.furo) now_hu += 10;
         }
         /*各メンツの符*/
-        for(i=2;i<14;i+=3){
-            if(!(sfc.struct[i]==sfc.struct[i+1]==sfc.struct[i+2])) break;
-            if((11<sfc.struct[i]&&sfc.struct<19)&&(21<sfc.struct[i]&&sfc.struct<29)&&(31<sfc.struct&&sfc.struct<39)){
+        for(int i=2;i<14;i+=3){
+            if(!(sfc.struct[i]==sfc.struct[i+1])) break;
+            if((11<sfc.struct[i]&&sfc.struct[i]<19)&&(21<sfc.struct[i]&&sfc.struct[i]<29)&&(31<sfc.struct[i]&&sfc.struct[i]<39)){
                 now_hu += 4;
             } else {
                 now_hu += 8;
@@ -36,12 +36,12 @@ public class SignCul{
         }
         
         /*雀頭符*/
-        if(0<sfc.struct[0]<8){
+        if(0<sfc.struct[0]&&sfc.struct[0]<8){
             if(sfc.struct[0] == sfc.jikaze+1){
                 now_hu += 2;
             }else if(sfc.struct[0] == sfc.bakaze+1){
                 now_hu += 2;
-            } else if(4<sfc.struct[0]<8){
+            } else if(4<sfc.struct[0]&&sfc.struct[0]<8){
                 now_hu += 2;
             }
 

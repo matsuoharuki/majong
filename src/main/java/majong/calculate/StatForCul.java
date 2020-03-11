@@ -20,7 +20,7 @@ public class StatForCul {
     public int anko;//暗刻の数
 
     private int[] hai;//牌ベクトル
-    //public int[][] struct= {{0,0,0},{0,0,0},{0,0,0},{0,0}};//牌の構造
+    public int[] struct= new int[14];//牌の構造
 
     public StatForCul(int[] hai,int agarihai,boolean agarikata,boolean furo,int dora,boolean richi,boolean ippatsu,int jikaze,int bakaze,int honba){
         this.hai = hai;
@@ -70,8 +70,10 @@ public class StatForCul {
         honba = sc.nextInt();
     }
     */
+    /*
     private boolean booler(String s){
         if (s == "y") return true;
         else return false;
     }
+    */
 }
