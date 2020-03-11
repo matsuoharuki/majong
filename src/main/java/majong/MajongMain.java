@@ -1,4 +1,3 @@
-
 package majong;
 
 public class MajongMain {
