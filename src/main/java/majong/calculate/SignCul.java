@@ -47,12 +47,15 @@ public class SignCul{
 
         }
         /*待ち符*/
+        /*
         if(sfc.agarihai==sfc.struct[0]){
             now_hu += 2;
         }
         for(i=2;i<14;i+=3){
             if(sfc.agarihai!=(sfc.struct[i]&&sfc.struct[i+1]&&sfc.struct[i+2])) break;
         }
+        */
+        sfc.hu = now_hu;
     }
     }
     private boolean pinfuTsumo(StatForCul sfc){
