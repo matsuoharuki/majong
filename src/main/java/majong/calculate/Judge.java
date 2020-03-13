@@ -3,6 +3,11 @@ package majong.calculate;
 public class Judge{
     private StatForCul sfc;
     private int[] hai;
+    private String[] haiID = {  "  ", "東", "南", "西", "北", "白", "発", "中", "  ", "  ",
+                                "  ", "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m",
+                                "  ", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s",
+                                "  ", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p",
+                                };
 
     public Judge( StatForCul sfc ){
         this.sfc = sfc;
@@ -14,6 +19,10 @@ public class Judge{
     }
 
     public void yaku_pirnt(){
+        int i;
+        for( i=0; i<14; i++ ) 
+            System.out.print( haiID[ hai[i] ] );
+        System.out.println();
         System.out.println( "yakuhai\t" + yakuhai() );
         System.out.println( "tanyao\t" + tanyao() );
         System.out.println( "pinfu\t" + pinfu() );
@@ -105,7 +114,7 @@ public class Judge{
         for( i=2; i<12; i+=3 ){
             if( hai[i]==hai[i+1] )
                 continue;
-            for( j=3; i+j<14; j+=3 ){
+            for( j=i+3; i+j<14; j+=3 ){
                 if( hai[i]==hai[j]
                     && hai[i+1]==hai[j+1]
                     && hai[i+2]==hai[j+2] )
@@ -226,7 +235,7 @@ public class Judge{
                     || hai[ mentsu[(i+1)%4] ]!=hai[ mentsu[(i+1)%4]+1 ]
                     || hai[ mentsu[(i+2)%4] ]!=hai[ mentsu[(i+2)%4]+1 ] )
                 continue;
-            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4]%10 ]
+            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4 ]%10 ]
                     && hai[ mentsu[(i+1)%4] ]%10 == hai[ mentsu[(i+2)%4] ]%10 ){
                 if( hai[ mentsu[i%4] ]/10 != hai[ mentsu[(i+1)%4]/10 ]
                         && hai[ mentsu[(i+1)%4] ]/10 != hai[ mentsu[(i+2)%4] ]/10
