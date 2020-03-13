@@ -142,9 +142,9 @@ public class Judge{
                     || hai[ mentsu[(i+1)%4] ]==hai[ mentsu[(i+1)%4]+1 ]
                     || hai[ mentsu[(i+2)%4] ]==hai[ mentsu[(i+2)%4]+1 ] )
                 continue;
-            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4]%10 ]
+            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4] ]%10
                     && hai[ mentsu[(i+1)%4] ]%10 == hai[ mentsu[(i+2)%4] ]%10 ){
-                if( hai[ mentsu[i%4] ]/10 != hai[ mentsu[(i+1)%4]/10 ]
+                if( hai[ mentsu[i%4] ]/10 != hai[ mentsu[(i+1)%4] ]/10
                         && hai[ mentsu[(i+1)%4] ]/10 != hai[ mentsu[(i+2)%4] ]/10
                         && hai[ mentsu[(i+2)%4] ]/10 != hai[ mentsu[i%4] ]/10 ){
                     if( this.sfc.furo == false )
@@ -235,7 +235,7 @@ public class Judge{
                     || hai[ mentsu[(i+1)%4] ]!=hai[ mentsu[(i+1)%4]+1 ]
                     || hai[ mentsu[(i+2)%4] ]!=hai[ mentsu[(i+2)%4]+1 ] )
                 continue;
-            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4 ]%10 ]
+            if( hai[ mentsu[i%4] ]%10 == hai[ mentsu[(i+1)%4 ] ]%10
                     && hai[ mentsu[(i+1)%4] ]%10 == hai[ mentsu[(i+2)%4] ]%10 ){
                 if( hai[ mentsu[i%4] ]/10 != hai[ mentsu[(i+1)%4]/10 ]
                         && hai[ mentsu[(i+1)%4] ]/10 != hai[ mentsu[(i+2)%4] ]/10
