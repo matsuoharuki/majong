@@ -31,4 +31,19 @@ public class ImageConverter {
         ImageIO.write(dst, "png", out); 
     }
 
+    public static void changeImageColor(File in, File out) throws IOException {
+        BufferedImage org = ImageIO.read(in);
+        ImageFilter filter = new ThreeValueImageFilter();
+        ImageProducer p = new FilteredImageSource(org.getSource(), filter);
+        Image dstImage = Toolkit.getDefaultToolkit().createImage(p);
+        BufferedImage dst = new BufferedImage(
+            dstImage.getWidth(null), dstImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = dst.createGraphics();
+        g.drawImage(dstImage, 0, 0, null);
+        g.dispose();
+        ImageIO.write(dst, "png", out); 
+    }
+
+
 }
+
