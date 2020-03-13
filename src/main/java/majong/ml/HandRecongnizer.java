@@ -20,47 +20,5 @@ import java.io.FileInputStream;
  */
 public class HandRecongnizer {
     public static void exec() throws Exception {
-      String binFile = "src/main/resources/model/convolution.bin";
-      String confFile = "src/main/resources/model/convolution.json";
-        int outputNum = 10;
-
-        Logger log = LoggerFactory.getLogger(HandRecongnizer.class);
-
-        log.info("Load stored model ...");
-        MultiLayerConfiguration confFromJson = MultiLayerConfiguration.fromJson(FileUtils.readFileToString(new File(confFile)));
-        DataInputStream dis = new DataInputStream(new FileInputStream(new File(binFile)));
-        INDArray newParams = Nd4j.read(dis);
-        dis.close();
-        MultiLayerNetwork model = new MultiLayerNetwork(confFromJson);
-        model.init();
-        model.setParams(newParams);
-
-        System.out.println(model);
-
-        log.info("Evaluate weights....");
-
-        log.info("Evaluate model....");
-        MnistDataSetIterator testIter = new MnistDataSetIterator(100, 500);
-        Evaluation eval = new Evaluation(outputNum);
-        while (testIter.hasNext()) {
-        DataSet dataSet = testIter.next();
-        INDArray output = model.output(dataSet.getFeatureMatrix());
-        eval.eval(dataSet.getLabels(), output);
-        }
-        log.info(eval.stats());
-
-    //    log.info("Test ...");
-    //    MnistDataSetIterator testIter = new MnistDataSetIterator(1, 10);
-    //    while (testIter.hasNext()) {
-    //      DataSet testMnist = testIter.next();
-    //      INDArray feature = testMnist.getFeatureMatrix();
-    //      INDArray labels = testMnist.getLabels();
-    //      INDArray predicted = model.output(feature, Layer.TrainingMode.TEST);
-    ////      System.out.println(feature);
-    //      System.out.println(labels);
-    //      System.out.println(predicted);
-    //      System.out.println("--------------");
-    //    }
-  }
-
+    }
 }
