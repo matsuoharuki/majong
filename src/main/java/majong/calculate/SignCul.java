@@ -47,16 +47,47 @@ public class SignCul{
 
         }
         /*待ち符*/
-        /*
+        
         if(sfc.agarihai==sfc.struct[0]){
             now_hu += 2;
+        }else if(sfc.agarihai<10){
+            now_hu += 2;
         }
-        for(i=2;i<14;i+=3){
-            if(sfc.agarihai!=(sfc.struct[i]&&sfc.struct[i+1]&&sfc.struct[i+2])) break;
+        else{
+        for(int i=2;i<14;i+=3){
+            if(sfc.agarihai==sfc.struct[i]){
+                if(sfc.struct[i]==sfc.struct[i+1]){
+                    now_hu += 2;
+                    break;
+                } else if(sfc.struct[i]%10==7){
+                    now_hu += 2;
+                    break;
+                } else{
+                    break;
+                }
+            }
+            else if(sfc.agarihai==sfc.struct[i+1]){
+                now_hu += 2;
+                break;
+            }
+            else if(sfc.agarihai==sfc.struct[i+2]){
+                if(sfc.struct[i]==sfc.struct[i+1]){
+                    now_hu += 2;
+                    break;
+                } else if(sfc.struct[i]%10==3){
+                    now_hu += 2;
+                    break;
+                } else{
+                    break;
+                }
+            }
+
         }
-        */
+    }
+        
         sfc.hu = now_hu;
     }
+
     }
     private boolean pinfuTsumo(StatForCul sfc){
         return false;

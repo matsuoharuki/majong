@@ -14,8 +14,9 @@ public class SignCulTest {
     int jikaze=1;//0 -> 東 1 -> 南 3 -> 西 4 -> 北
     int bakaze=1;//0 -> 東 1 -> 南
     int honba=0;//本場数
-    int hai[] = {3,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    int hai[] = {3,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     StatForCul sfc = new StatForCul(hai, agarihai, agarikata, furo, dora, richi, ippatsu, jikaze, bakaze, honba);
+    sfc.struct = {21,21,1,1,1,11,12,13,14,15,16,17,18,19};
     SignCul sc = new SignCul(sfc);
     sc.signCul();
     System.out.print("Hello World");
