@@ -11,7 +11,7 @@ public class SignCulTest {
     private int[] test4 = {1,1,2,2,2,14,14,14,22,23,24,36,37,38};//sfc.hu = 36
     private int[] test5 = {1,1,2,2,3,3,4,4,5,5,6,6,7,7};//sfc.hu = 25
     private int[] test6 = {1,2,3,4,5,6,7,11,19,21,29,31,39,1};//sfc.hu = 0
-    private int[] test7 = {11,11,21,22,23,24,25,26,27,28,29,31,32,33};//sfc.hu = 7:20 7_2: 7_3: 7_4:
+    private int[] test7 = {11,11,21,22,23,24,25,26,27,28,29,31,32,33};//sfc.hu = 7:20 7_2:30 7_3:22 7_4:24
 
     int dora=3;//ドラの数
     private boolean richi=false;//false -> 立直なし true -> 立直あり
