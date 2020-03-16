@@ -70,10 +70,9 @@ public class StatForCul {
         honba = sc.nextInt();
     }
     */
-    /*
     private boolean booler(String s){
         if (s == "y") return true;
         else return false;
     }
-    */
+    
 }
