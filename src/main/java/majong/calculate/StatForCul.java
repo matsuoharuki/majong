@@ -8,8 +8,8 @@ public class StatForCul {
     final public int dora;//ドラの数
     final public boolean richi;//false -> 立直なし true -> 立直あり
     final public boolean ippatsu;//false -> 一発なし true -> 一発あり
-    final public int jikaze;//0 -> 東 1 -> 南 3 -> 西 4 -> 北
-    final public int bakaze;//0 -> 東 1 -> 南
+    final public int jikaze;//1 -> 東 2 -> 南 3 -> 西 4 -> 北
+    final public int bakaze;//1 -> 東 2 -> 南
     final public int honba;//本場数
 
     public boolean flag13;//fasle -> 国士ではない true -> 国士
