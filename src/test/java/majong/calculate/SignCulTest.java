@@ -22,15 +22,15 @@ public class SignCulTest {
     private int hai[] = {3,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
     @Test public void test1SignCul() {
-    int agarihai=1;//上り牌が何だったか,牌と1対1対応の数字で数字
-    boolean agarikata=false;//false -> ツモ true -> ロン
-    boolean furo=false;// false -> 面前 -> true -> 鳴き
+        int agarihai=1;//上り牌が何だったか,牌と1対1対応の数字で数字
+        boolean agarikata=false;//false -> ツモ true -> ロン
+        boolean furo=false;// false -> 面前 -> true -> 鳴き
     
-    StatForCul sfc = new StatForCul(hai, agarihai, agarikata, furo, dora, richi, ippatsu, jikaze, bakaze, honba);
-    addArray(sfc, test1);
-    SignCul sc = new SignCul(sfc);
-    sc.signCul();
-    System.out.println(sfc.hu);
+        StatForCul sfc = new StatForCul(hai, agarihai, agarikata, furo, dora, richi, ippatsu, jikaze, bakaze, honba);
+        addArray(sfc, test1);
+        SignCul sc = new SignCul(sfc);
+        sc.signCul();
+        System.out.println(sfc.hu);
     }
 
     @Test public void test2SignCul() {
@@ -42,7 +42,7 @@ public class SignCulTest {
         addArray(sfc, test2);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test3SignCul() {
@@ -54,7 +54,7 @@ public class SignCulTest {
         addArray(sfc, test3);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test4SignCul() {
@@ -66,7 +66,7 @@ public class SignCulTest {
         addArray(sfc, test4);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test5SignCul() {
@@ -75,11 +75,11 @@ public class SignCulTest {
         boolean furo=false;// false -> 面前 -> true -> 鳴き
         
         StatForCul sfc = new StatForCul(hai, agarihai, agarikata, furo, dora, richi, ippatsu, jikaze, bakaze, honba);
-        addArray(sfc, test4);
+        addArray(sfc, test5);
         sfc.flag7 = true;
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test6SignCul() {
@@ -92,7 +92,7 @@ public class SignCulTest {
         sfc.flag13 = true;
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test7SignCul() {
@@ -104,7 +104,7 @@ public class SignCulTest {
         addArray(sfc, test7);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test7_2SignCul() {
@@ -116,7 +116,7 @@ public class SignCulTest {
         addArray(sfc, test7);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test7_3SignCul() {
@@ -128,7 +128,7 @@ public class SignCulTest {
         addArray(sfc, test7);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     @Test public void test7_4SignCul() {
@@ -140,11 +140,11 @@ public class SignCulTest {
         addArray(sfc, test7);
         SignCul sc = new SignCul(sfc);
         sc.signCul();
-        System.out.println(sfc.hu);
+        //System.out.println(sfc.hu);
     }
 
     private void addArray (StatForCul sfc,int[] array){
-        for(int i=0;i<14;i++){
+        for(int i = 0;i < 14; i++){
         sfc.struct[i] = array[i];
         }
     }

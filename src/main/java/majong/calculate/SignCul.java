@@ -28,9 +28,9 @@ public class SignCul{
             if(!sfc.furo) now_hu += 10;
         }
         /*各メンツの符*/
-        for(int i=2;i<14;i+=3){
-            if(!(sfc.struct[i]==sfc.struct[i+1])) continue;
-            if((11<sfc.struct[i]&&sfc.struct[i]<19)||(21<sfc.struct[i]&&sfc.struct[i]<29)||(31<sfc.struct[i]&&sfc.struct[i]<39)){
+        for(int i = 2;i < 14;i += 3){
+            if(!(sfc.struct[i] == sfc.struct[i+1])) continue;
+            if((11 < sfc.struct[i] && sfc.struct[i] < 19)||(21 < sfc.struct[i] && sfc.struct[i] < 29) || (31 < sfc.struct[i] && sfc.struct[i] < 39)){
                 now_hu += 4;
             } else {
                 now_hu += 8;
@@ -38,45 +38,45 @@ public class SignCul{
         }
         
         /*雀頭符*/
-        if(0<sfc.struct[0]&&sfc.struct[0]<8){
+        if(0 < sfc.struct[0] && sfc.struct[0] < 8){
             if(sfc.struct[0] == sfc.jikaze){
                 now_hu += 2;
             }else if(sfc.struct[0] == sfc.bakaze){
                 now_hu += 2;
-            } else if(4<sfc.struct[0]&&sfc.struct[0]<8){
+            } else if(4 < sfc.struct[0] && sfc.struct[0] < 8){
                 now_hu += 2;
             }
 
         }
         /*待ち符*/
         
-        if(sfc.agarihai==sfc.struct[0]){
+        if(sfc.agarihai == sfc.struct[0]){
             now_hu += 2;
-        }else if(sfc.agarihai<10){
+        }else if(sfc.agarihai <10){
             now_hu += 2;
         }
         else{
-        for(int i=2;i<14;i+=3){
-            if(sfc.agarihai==sfc.struct[i]){
-                if(sfc.struct[i]==sfc.struct[i+1]){
+        for(int i = 2;i < 14;i += 3){
+            if(sfc.agarihai == sfc.struct[i]){
+                if(sfc.struct[i] == sfc.struct[i+1]){
                     now_hu += 2;
                     break;
-                } else if(sfc.struct[i]%10==7){
+                } else if(sfc.struct[i] % 10==7){
                     now_hu += 2;
                     break;
                 } else{
                     break;
                 }
             }
-            else if(sfc.agarihai==sfc.struct[i+1]){
+            else if(sfc.agarihai == sfc.struct[i+1]){
                 now_hu += 2;
                 break;
             }
-            else if(sfc.agarihai==sfc.struct[i+2]){
-                if(sfc.struct[i]==sfc.struct[i+1]){
+            else if(sfc.agarihai == sfc.struct[i+2]){
+                if(sfc.struct[i] == sfc.struct[i+1]){
                     now_hu += 2;
                     break;
-                } else if(sfc.struct[i]%10==3){
+                } else if(sfc.struct[i] % 10 == 3){
                     now_hu += 2;
                     break;
                 } else{
@@ -92,9 +92,9 @@ public class SignCul{
 
     }
     private boolean pinfuTsumo(StatForCul sfc){
-        if(4<=sfc.struct[0]&&sfc.struct[0]<8){
+        if(4 <= sfc.struct[0] && sfc.struct[0] < 8){
             return false;
-        }else if(sfc.struct[0]==sfc.jikaze||sfc.struct[0]==sfc.bakaze){
+        }else if(sfc.struct[0] == sfc.jikaze || sfc.struct[0] == sfc.bakaze){
             return false;
         }
         else{
@@ -103,23 +103,23 @@ public class SignCul{
             if(sfc.agarihai==sfc.struct[0]){
                 return false;
             } else {
-                for(int i=2;i<14;i+=3){
-                    if(sfc.agarihai==sfc.struct[i]){
-                        if(sfc.struct[i]==sfc.struct[i+1]){
+                for(int i = 2;i < 14;i += 3){
+                    if(sfc.agarihai == sfc.struct[i]){
+                        if(sfc.struct[i] == sfc.struct[i+1]){
                             return false;
-                        } else if(sfc.struct[i]%10==7){
+                        } else if(sfc.struct[i] % 10 == 7){
                             return false;
                         } else{
                             return true;
                         }
                     }
-                    else if(sfc.agarihai==sfc.struct[i+1]){
+                    else if(sfc.agarihai == sfc.struct[i+1]){
                         return false;
                     }
-                    else if(sfc.agarihai==sfc.struct[i+2]){
-                        if(sfc.struct[i]==sfc.struct[i+1]){
+                    else if(sfc.agarihai == sfc.struct[i+2]){
+                        if(sfc.struct[i] == sfc.struct[i+1]){
                             return false;
-                        } else if(sfc.struct[i]%10==3){
+                        } else if(sfc.struct[i] % 10 == 3){
                             return false;
                         } else{
                             return true;
