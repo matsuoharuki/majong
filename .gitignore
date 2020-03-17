@@ -1,12 +1,13 @@
 .DS_Store
 .settings
-.classpath
+.classpathS
 .project
 .vscode
 .metadata
 bin
 *.code-workspace
 .DS_Store
+.
 
 
 build

@@ -2,6 +2,14 @@ package majong.calculate;
 import java.util.LinkedList;
 import java.util.Arrays;
 
+/*入力：配列[33]*/
+/*出力：雀頭
+	   刻子の位置
+	   順子の先頭の位置S
+	   ７対子フラグ
+	   国士無双フラグ
+	   */
+
 public class Structure{
 	//牌のリスト（0-8 マンズ，9-17 ピンズ，18-26 ソウズ，27-30　東南西北，31-33　白発中）
 	//刻子
