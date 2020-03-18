@@ -5,8 +5,8 @@ public class Judge{
     private int[] hai;
     private String[] haiID = {  "  ", "東", "南", "西", "北", "白", "発", "中", "  ", "  ",
                                 "  ", "1m", "2m", "3m", "4m", "5m", "6m", "7m", "8m", "9m",
-                                "  ", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s",
                                 "  ", "1p", "2p", "3p", "4p", "5p", "6p", "7p", "8p", "9p",
+                                "  ", "1s", "2s", "3s", "4s", "5s", "6s", "7s", "8s", "9s",
                                 };
 
     public Judge( StatForCul sfc ){
@@ -21,7 +21,7 @@ public class Judge{
     public void yaku_pirnt(){
         int i;
         for( i=0; i<14; i++ ) 
-            System.out.print( " " + haiID[ hai[i] ] );
+            System.out.print( haiID[ hai[i] ] + " " );
         System.out.println();
         System.out.println( "yakuhai\t" + yakuhai() );
         System.out.println( "tanyao\t" + tanyao() );
@@ -42,6 +42,13 @@ public class Judge{
         System.out.println( "chiniso\t" + chiniso() );
         System.out.println( "suanko\t" + suanko() );
         System.out.println( "kokushimusou\t" + kokushimusou() );
+        System.out.println( "daisangen\t" + daisangen() );
+        System.out.println( "daisushi\t" + daisushi() );
+        System.out.println( "shousushi\t" + shousushi() );
+        System.out.println( "tsuiso\t" + tsuiso() );
+        System.out.println( "chinroutou\t" + chinroutou() );
+        System.out.println( "ryuiso\t" + ryuiso() );
+        System.out.println( "churenpoton\t" + churenpoton() );
     }
 
     public void matome(){
@@ -64,16 +71,40 @@ public class Judge{
         this.sfc.yaku += chiniso();
         this.sfc.yaku += suanko();
         this.sfc.yaku += kokushimusou();
+        this.sfc.yaku += daisangen();
+        this.sfc.yaku += daisushi();
+        this.sfc.yaku += shousushi();
+        this.sfc.yaku += tsuiso();
+        this.sfc.yaku += chinroutou();
+        this.sfc.yaku += ryuiso();
+        this.sfc.yaku += churenpoton();
         System.out.println( this.sfc.yaku );
+    }
+
+    public boolean yakuman(){
+        if( suanko() > 0
+                || kokushimusou() > 0
+                || daisangen() > 0
+                || daisushi() > 0
+                || shousushi() > 0
+                || tsuiso() > 0
+                || chinroutou() > 0
+                || ryuiso() > 0
+                || churenpoton() > 0 )
+            return true;
+        else
+            return false;
     }
 
     int yakuhai(){
         //daisangen==Tまたはshousangen==TならFalseを返す処理
+        if( yakuman() )
+            return 0;
         int i;
         int jihai[] = { 5, 6, 7, this.sfc.jikaze, this.sfc.bakaze };
         for( i=2; i<12; i+=3 ){
             for( int x: jihai ){
-                if( hai[i]==x && hai[i+1]==x && hai[i+1]==x )
+                if( hai[i]==x && hai[i+1]==x && hai[i+2]==x )
                     return 1;
             }
         }
@@ -81,6 +112,8 @@ public class Judge{
     }
 
     int tanyao(){
+        if( yakuman() )
+            return 0;
         int i;
         for( i=0; i<14; i++ ){
             if( ( hai[i] < 10 ) || ( hai[i] % 10 == 1 ) || ( hai[i] % 10 ) == 9 )
@@ -91,6 +124,8 @@ public class Judge{
     }
 
     int pinfu(){
+        if( yakuman() )
+            return 0;
         if( this.sfc.furo )
             return 0;
         if( hai[0]==5 || hai[0]==6 || hai[0]==7 || hai[0]==this.sfc.jikaze || hai[0]==this.sfc.bakaze )
@@ -111,6 +146,8 @@ public class Judge{
     }
 
     int menzentsumo(){
+        if( yakuman() )
+            return 0;
         if( this.sfc.furo==false && this.sfc.agarikata==false )
             return 1;
         else
@@ -118,6 +155,8 @@ public class Judge{
     }
 
     int ipeko(){
+        if( yakuman() )
+            return 0;
         if( this.sfc.furo )
             return 0;
         int i,j;
@@ -135,7 +174,7 @@ public class Judge{
     }
 
     int toitoi(){
-        if( suanko()>0 )
+        if( yakuman() )
             return 0;
         if( hai[2]==hai[3]
             && hai[5]==hai[6]
@@ -146,6 +185,8 @@ public class Judge{
     }
 
     int sanshokudoujun(){
+        if( yakuman() )
+            return 0;
         int i;
         int mentsu[] = { 2, 5, 8, 11 };
         for( i=0; i<4; i++ ){
@@ -169,6 +210,8 @@ public class Judge{
     }
 
     int ikkitsuukan(){
+        if( yakuman() )
+            return 0;
         int i,j,k,cnt;
         for( i=1; i<4; i++ ){
             cnt = 0;
@@ -191,7 +234,9 @@ public class Judge{
     }
 
     int chanta(){
-        if( honroutou() > 0 || kokushimusou()>0 )
+        if( yakuman() )
+            return 0;
+        if( honroutou() > 0 || junchan()>0 )
             return 0;
         if( ( hai[0] > 10 ) && ( hai[0] % 10 != 1 ) && ( hai[0] % 10 ) != 9 )
             return 0;
@@ -209,6 +254,8 @@ public class Judge{
     }
 
     int sananko(){
+        if( yakuman() )
+            return 0;
         if( this.sfc.anko==3 )
             return 2;
         else
@@ -216,6 +263,8 @@ public class Judge{
     }
 
     int shousangen(){
+        if( yakuman() )
+            return 0;
         int i,j;
         if( hai[0]==5 || hai[0]==6 || hai[0]==7 ){
             for( i=2; i<12; i+=3 ){
@@ -231,9 +280,9 @@ public class Judge{
     }
 
     int honroutou(){
-        int i;
-        if( kokushimusou()>0 )
+        if( yakuman() )
             return 0;
+        int i;
         for( i=0; i<14; i++ ){
             if( ( hai[i] > 10 ) && ( hai[i] % 10 != 1 ) && ( hai[i] % 10 ) != 9 )
                 return 0;
@@ -242,6 +291,8 @@ public class Judge{
     }
     
     int sanshokudoko(){
+        if( yakuman() )
+            return 0;
         int i;
         int mentsu[] = { 2, 5, 8, 11 };
         for( i=0; i<4; i++ ){
@@ -261,6 +312,8 @@ public class Judge{
     }
 
     int honiso(){
+        if( yakuman() || chiniso()>0 )
+            return 0;
         int i,j;
         for( i=1; i<4; i++ ){
             j=0;
@@ -278,6 +331,8 @@ public class Judge{
     }
 
     int junchan(){
+        if( yakuman() )
+            return 0;
         if( honroutou() > 0 )
             return 0;
         if( ( hai[0] < 10 ) || ( ( hai[0] % 10 != 1 ) && ( hai[0] % 10 ) != 9 ) )
@@ -296,6 +351,8 @@ public class Judge{
     }
 
     int ryanpeko(){
+        if( yakuman() )
+            return 0;
         if( this.sfc.furo )
             return 0;
         int i;
@@ -317,6 +374,8 @@ public class Judge{
     }
 
     int chiniso(){
+        if( yakuman() )
+            return 0;
         int i,j;
         for( i=1; i<4; i++ ){
             j=0;
@@ -446,7 +505,7 @@ public class Judge{
         int[] green = {6, 32, 33, 34, 36, 38};
         for( i=0; i<14; i++ ){
             flag = 0;
-            for( j=0; j<14; j++ ){
+            for( j=0; j<6; j++ ){
                 if( hai[i]==green[j] )
                 flag = 1;
             }
@@ -463,36 +522,36 @@ public class Judge{
             return 0;
         for( i=1; i<4; i++ ){
             //whether hai[] does not have other color
+            //whether hai[] has 1 ~ 9
+            cnt = 0;
             for( j=1; j<10; j++ ){
-                //whether hai[] has 1 ~ 9
-                cnt = 0;
                 for( k=0; k<14; k++ ){
                     if( hai[k] == 10*i + j ){
                         cnt++;
                     }
                 }
-                if( cnt<9 )
-                    continue;
-                //whether hai[] has 3 1s or more
-                cnt = 0;
-                for( k=0;k<14; k++ ){
-                    if( hai[k] == 10*i + 1 ){
-                        cnt++;
-                    }
-                }
-                if( cnt<3 )
-                    continue;
-                //whether hai[] has 3 9s or more
-                cnt = 0;
-                for( k=0;k<14; k++ ){
-                    if( hai[k] == 10*i + 9 ){
-                        cnt++;
-                    }
-                }
-                if( cnt<3 )
-                    continue;
-                return 13;
             }
+            if( cnt<9 )
+                continue;
+            //whether hai[] has 3 1s or more
+            cnt = 0;
+            for( k=0;k<14; k++ ){
+                if( hai[k] == 10*i + 1 ){
+                    cnt++;
+                }
+            }
+            if( cnt<3 )
+                continue;
+            //whether hai[] has 3 9s or more
+            cnt = 0;
+            for( k=0;k<14; k++ ){
+                if( hai[k] == 10*i + 9 ){
+                    cnt++;
+                }
+            }
+            if( cnt<3 )
+                continue;
+            return 13;
         }
         return 0;
     }
