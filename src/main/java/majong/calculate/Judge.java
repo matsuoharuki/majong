@@ -172,15 +172,15 @@ public class Judge{
         int i,j,k,cnt;
         for( i=1; i<4; i++ ){
             cnt = 0;
-            for( j=1; j<10; j++ ){
-                for( k=0; k<14; k++ ){
-                    if( hai[k]/10==i && hai[k]%10==j ){
+            for( j=1; j<10; j+=3 ){
+                for( k=2; k<14; k+=3 ){
+                    if( hai[k]/10==i && hai[k]%10==j && hai[k+1]%10==j+1 ){
                         cnt += 1;
                         break;
                     }
                 }
             }
-            if( cnt==9 ){
+            if( cnt >= 3 ){
                 if( this.sfc.furo == false )
                     return 2;
                 else
@@ -236,7 +236,7 @@ public class Judge{
             return 0;
         for( i=0; i<14; i++ ){
             if( ( hai[i] > 10 ) && ( hai[i] % 10 != 1 ) && ( hai[i] % 10 ) != 9 )
-            return 0;
+                return 0;
         }
         return 2;
     }
@@ -361,4 +361,140 @@ public class Judge{
         }
         return 13;
     }
+
+    int daisangen(){
+        int i,j,k;
+        for( i=2; i<12; i+=3 ){
+            if( hai[i]==5 || hai[i]==6 || hai[i]==7 ){
+                for( j=i+3; j<12; j+=3 ){
+                    if( hai[j]==5 || hai[j]==6 || hai[j]==7 ){
+                        for( k=j+3; k<12; k+=3 ){
+                            if( hai[k]==5 || hai[k]==6 || hai[k]==7 )
+                                return 13;
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    int daisushi(){
+        int i,j,k,l;
+        for( i=2; i<14; i+=3 ){
+            if( hai[i]==1 ){
+                for( j=2; j<14; j+=3 ){
+                    if( hai[j]==2 ){
+                        for( k=2; k<14; k+=3 ){
+                            if( hai[k]==3 ){
+                                for( l=2; l<14; l+=3 ){
+                                    if( hai[k]==3 ){    
+                                        return 13;
+                                    }
+                                }    
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    int shousushi(){
+        int i,j,k;
+        if( hai[0]<5 ){
+            for( i=2; i<14; i+=3 ){
+                if( hai[i]<5 ){ //hai[i]==1 || hai[i]==2 || hai[i]==3 || hai[i]==4
+                    for( j=i+3; j<14; j+=3 ){
+                        if( hai[j]<5 ){
+                            for( k=j+2; k<14; k+=3 ){
+                                if( hai[k]<5){   
+                                    return 13;  
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+    int tsuiso(){
+        int i;
+        for( i=0; i<14; i++ ){
+            if( hai[i]>10 )
+                return 0;
+        }
+        return 13;
+    }
+
+    int chinroutou(){
+        int i;
+        for( i=0; i<14; i++ ){
+            if( hai[i] < 10 )
+                return 0;
+            if( ( hai[i] % 10 != 1 ) && ( hai[i] % 10 ) != 9 )
+                return 0;
+        }
+        return 13;
+    }
+
+    int ryuiso(){
+        int i,j,flag;
+        int[] green = {6, 32, 33, 34, 36, 38};
+        for( i=0; i<14; i++ ){
+            flag = 0;
+            for( j=0; j<14; j++ ){
+                if( hai[i]==green[j] )
+                flag = 1;
+            }
+            //flag==1 if hai[i] is contained in green[]
+            if( flag == 0 )
+                return 0;
+        }
+        return 13;
+    }
+
+    int churenpoton(){
+        int i, j, k, cnt;
+        if( this.sfc.furo==true )
+            return 0;
+        for( i=1; i<4; i++ ){
+            //whether hai[] does not have other color
+            for( j=1; j<10; j++ ){
+                //whether hai[] has 1 ~ 9
+                cnt = 0;
+                for( k=0; k<14; k++ ){
+                    if( hai[k] == 10*i + j ){
+                        cnt++;
+                    }
+                }
+                if( cnt<9 )
+                    continue;
+                //whether hai[] has 3 1s or more
+                cnt = 0;
+                for( k=0;k<14; k++ ){
+                    if( hai[k] == 10*i + 1 ){
+                        cnt++;
+                    }
+                }
+                if( cnt<3 )
+                    continue;
+                //whether hai[] has 3 9s or more
+                cnt = 0;
+                for( k=0;k<14; k++ ){
+                    if( hai[k] == 10*i + 9 ){
+                        cnt++;
+                    }
+                }
+                if( cnt<3 )
+                    continue;
+                return 13;
+            }
+        }
+        return 0;
+    }
+
 }
