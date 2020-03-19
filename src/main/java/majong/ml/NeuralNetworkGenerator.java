@@ -26,9 +26,14 @@ import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.learning.config.Nesterovs;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
+import org.nd4j.linalg.learning.config.Sgd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +61,7 @@ public class NeuralNetworkGenerator {
 
     public static void exec() throws Exception {
         //number of rows and columns in the input pictures
+        /*
         final int numRows = 28;
         final int numColumns = 28;
         int outputNum = 10; // number of output classes
@@ -97,9 +103,59 @@ public class NeuralNetworkGenerator {
         log.info("Train model....");
         model.fit(mnistTrain, numEpochs);
 
-
         log.info("Evaluate model....");
         Evaluation eval = model.evaluate(mnistTest);
+        log.info(eval.stats());
+        log.info("****************Example finished********************");
+        */
+
+        int seed        = 123;          // 乱数シード
+        int inputNum    = 2;            // 入力数
+        int outputNum   = 2;            // 出力数
+
+        INDArray inputData = Nd4j.create(new float[]{1, 1, 1, 0, 0, 1, 0, 0}, new int[]{4, 2});
+        INDArray outputData = Nd4j.create(new float[]{0, 1, 0, 1, 0, 1, 0, 0}, new int[]{4, 2});
+
+        INDArray inputTestData = Nd4j.create(new float[]{1, 1, 1, 0, 0, 1, 0, 0}, new int[]{4, 2});
+        INDArray outputTestData = Nd4j.create(new float[]{0, 1, 0, 1, 0, 1, 0, 0}, new int[]{4, 2});
+
+        DataSet train = new DataSet(inputData, outputData);
+
+        System.out.println(train);
+
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+            .seed(seed) //include a random seed for reproducibility
+            // use stochastic gradient descent as an optimization algorithm
+            .updater(new Nesterovs(0.006, 0.9))
+            .l2(1e-4)
+            .list()
+            .layer(new DenseLayer.Builder() //create the first, input layer with xavier initialization
+                    .nIn(inputNum)
+                    .nOut(2)
+                    .activation(Activation.RELU)
+                    .weightInit(WeightInit.XAVIER)
+                    .build())
+            .layer(new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD) //create hidden layer
+                    .nIn(2)
+                    .nOut(outputNum)
+                    .activation(Activation.SOFTMAX)
+                    .weightInit(WeightInit.XAVIER)
+                    .build())
+            .build();
+
+        MultiLayerNetwork model = new MultiLayerNetwork(conf);
+        model.init();
+        //print the score with every 1 iteration
+        model.setListeners(new ScoreIterationListener(1));
+
+        log.info("Train model....");
+        model.fit(train);
+
+        log.info("Evaluate model....");
+        Evaluation eval = new Evaluation();
+        INDArray resultOutput = model.output(inputTestData);
+        System.out.println(resultOutput);
+        eval.eval(outputTestData, resultOutput);
         log.info(eval.stats());
         log.info("****************Example finished********************");
 
