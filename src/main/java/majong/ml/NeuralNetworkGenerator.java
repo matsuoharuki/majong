@@ -16,6 +16,7 @@
 
 package majong.ml;
 
+import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -61,7 +62,7 @@ public class NeuralNetworkGenerator {
 
     public static void exec() throws Exception {
         //number of rows and columns in the input pictures
-        /*
+        
         final int numRows = 28;
         final int numColumns = 28;
         int outputNum = 10; // number of output classes
@@ -107,17 +108,37 @@ public class NeuralNetworkGenerator {
         Evaluation eval = model.evaluate(mnistTest);
         log.info(eval.stats());
         log.info("****************Example finished********************");
-        */
+        
 
+        /*
         int seed        = 123;          // 乱数シード
         int inputNum    = 2;            // 入力数
         int outputNum   = 2;            // 出力数
 
+        
         INDArray inputData = Nd4j.create(new float[]{1, 1, 1, 0, 0, 1, 0, 0}, new int[]{4, 2});
         INDArray outputData = Nd4j.create(new float[]{0, 1, 0, 1, 0, 1, 0, 0}, new int[]{4, 2});
 
         INDArray inputTestData = Nd4j.create(new float[]{1, 1, 1, 0, 0, 1, 0, 0}, new int[]{4, 2});
         INDArray outputTestData = Nd4j.create(new float[]{0, 1, 0, 1, 0, 1, 0, 0}, new int[]{4, 2});
+        */
+
+        /*
+        double[][][] in = {{{0, 1}, {1, 0}}, {{0, 0}, {1, 1}}};
+        double[][][] out = {{{1, 0}, {1, 0}}, {{0, 0}, {1, 1}}};
+
+        int seed        = 123;          // 乱数シード
+        int inputNum    = 4;            // 入力数
+        int outputNum   = 2;            // 出力数
+
+        NativeImageLoader loader = new NativeImageLoader(40, 30);
+
+        INDArray inputData = Nd4j.create(in);
+        INDArray outputData = Nd4j.create(out);
+
+        INDArray inputTestData = Nd4j.create(in);
+        INDArray outputTestData = Nd4j.create(out);
+        
 
         DataSet train = new DataSet(inputData, outputData);
 
@@ -158,7 +179,7 @@ public class NeuralNetworkGenerator {
         eval.eval(outputTestData, resultOutput);
         log.info(eval.stats());
         log.info("****************Example finished********************");
-
+        */
     }
 
 }
