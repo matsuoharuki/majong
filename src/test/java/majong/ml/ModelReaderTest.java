@@ -1,7 +1,7 @@
 package majong.ml;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
@@ -20,7 +20,8 @@ public class ModelReaderTest {
         try {
             File file = new File("src/main/resources/pai_image/test/pin/p5.png");
             int result = ModelReader.useModel(file);
-            System.out.println(result);
+            //System.out.println(result);
+            assertThat(result).isEqualTo(2);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
