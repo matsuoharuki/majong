@@ -16,170 +16,323 @@
 
 package majong.ml;
 
+import org.apache.commons.io.FilenameUtils;
+import org.datavec.api.io.filters.BalancedPathFilter;
+import org.datavec.api.io.labels.ParentPathLabelGenerator;
+import org.datavec.api.split.FileSplit;
+import org.datavec.api.split.InputSplit;
 import org.datavec.image.loader.NativeImageLoader;
-import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
+import org.datavec.image.recordreader.ImageRecordReader;
+import org.datavec.image.transform.FlipImageTransform;
+import org.datavec.image.transform.ImageTransform;
+import org.datavec.image.transform.PipelineImageTransform;
+import org.datavec.image.transform.WarpImageTransform;
+import org.deeplearning4j.api.storage.StatsStorage;
+import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
-import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.conf.distribution.Distribution;
+import org.deeplearning4j.nn.conf.distribution.NormalDistribution;
+import org.deeplearning4j.nn.conf.inputs.InputType;
+import org.deeplearning4j.nn.conf.inputs.InvalidInputTypeException;
+import org.deeplearning4j.nn.conf.layers.*;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.nn.weights.WeightInitDistribution;
+import org.deeplearning4j.optimize.api.InvocationType;
+import org.deeplearning4j.optimize.listeners.EvaluativeListener;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.nd4j.evaluation.classification.Evaluation;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.nd4j.linalg.activations.Activation;
-import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
-import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
-import org.nd4j.linalg.learning.config.Nesterovs;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
+import org.nd4j.linalg.dataset.api.preprocessor.ImagePreProcessingScaler;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.AdaDelta;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
-import org.nd4j.linalg.learning.config.Sgd;
+import org.nd4j.linalg.primitives.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
-/**A Simple Multi Layered Perceptron (MLP) applied to digit classification for
- * the MNIST Dataset (http://yann.lecun.com/exdb/mnist/).
+import static java.lang.Math.toIntExact;
+
+/**
+ * Animal Classification
  *
- * This file builds one input layer and one hidden layer.
+ * Example classification of photos from 4 different animals (bear, duck, deer, turtle).
  *
- * The input layer has input dimension of numRows*numColumns where these variables indicate the
- * number of vertical and horizontal pixels in the image. This layer uses a rectified linear unit
- * (relu) activation function. The weights for this layer are initialized by using Xavier initialization
- * (https://prateekvjoshi.com/2016/03/29/understanding-xavier-initialization-in-deep-neural-networks/)
- * to avoid having a steep learning curve. This layer will have 1000 output signals to the hidden layer.
+ * References:
+ *  - U.S. Fish and Wildlife Service (animal sample dataset): http://digitalmedia.fws.gov/cdm/
+ *  - Tiny ImageNet Classification with CNN: http://cs231n.stanford.edu/reports/2015/pdfs/leonyao_final.pdf
  *
- * The hidden layer has input dimensions of 1000. These are fed from the input layer. The weights
- * for this layer is also initialized using Xavier initialization. The activation function for this
- * layer is a softmax, which normalizes all the 10 outputs such that the normalized sums
- * add up to 1. The highest of these normalized values is picked as the predicted class.
- *
+ * CHALLENGE: Current setup gets low score results. Can you improve the scores? Some approaches:
+ *  - Add additional images to the dataset
+ *  - Apply more transforms to dataset
+ *  - Increase epochs
+ *  - Try different model configurations
+ *  - Tune by adjusting learning rate, updaters, activation & loss functions, regularization, ...
  */
+
 public class NeuralNetworkGenerator {
+    protected static final Logger log = LoggerFactory.getLogger(NeuralNetworkGenerator.class);
+    protected static int height = 40;
+    protected static int width = 30;
+    protected static int channels = 1;
+    protected static int batchSize = 20;
 
-    private static Logger log = LoggerFactory.getLogger(NeuralNetworkGenerator.class);
+    protected static long seed = 42;
+    protected static Random rng = new Random(seed);
+    protected static int epochs = 100;
+    protected static boolean save = true;
 
-    public static void exec() throws Exception {
-        //number of rows and columns in the input pictures
-        
-        final int numRows = 28;
-        final int numColumns = 28;
-        int outputNum = 10; // number of output classes
-        int batchSize = 128; // batch size for each epoch
-        int rngSeed = 123; // random number seed for reproducibility
-        int numEpochs = 15; // number of epochs to perform
+    private int numLabels;
 
-        //Get the DataSetIterators:
-        DataSetIterator mnistTrain = new MnistDataSetIterator(batchSize, true, rngSeed);
-        DataSetIterator mnistTest = new MnistDataSetIterator(batchSize, false, rngSeed);
+    public static String dataLocalPath;
 
+    /**
+     * 
+     * @param path 学習に用いる画像データがあるディレクトリ
+     * @throws Exception
+     */
+    public void run(String path) throws Exception {
+
+        dataLocalPath = path;
+        /* cd
+         * Data Setup -> organize and limit data file paths:
+         *  - mainPath = path to image files
+         *  - fileSplit = define basic dataset split with limits on format
+         *  - pathFilter = define additional file load filter to limit size and balance batch content
+         */
+        ParentPathLabelGenerator labelMaker = new ParentPathLabelGenerator();
+        File mainPath = new File(dataLocalPath);
+        FileSplit fileSplit = new FileSplit(mainPath, NativeImageLoader.ALLOWED_FORMATS, rng);
+        int numExamples = toIntExact(fileSplit.length());
+        numLabels = Objects.requireNonNull(fileSplit.getRootDir().listFiles(File::isDirectory)).length; //This only works if your root is clean: only label subdirs.
+        int maxPathsPerLabel = 18;
+        BalancedPathFilter pathFilter = new BalancedPathFilter(rng, labelMaker, numExamples, numLabels, maxPathsPerLabel);
+
+        /*
+         * Data Setup -> train test split
+         *  - inputSplit = define train and test split
+         */
+        double splitTrainTest = 0.8;
+        InputSplit[] inputSplit = fileSplit.sample(pathFilter, splitTrainTest, 1 - splitTrainTest);
+        InputSplit trainData = inputSplit[0];
+        InputSplit testData = inputSplit[1];
+
+        /*
+         * Data Setup -> transformation
+         *  - Transform = how to transform images and generate large dataset to train on
+         */
+        ImageTransform flipTransform1 = new FlipImageTransform(rng);
+        ImageTransform flipTransform2 = new FlipImageTransform(new Random(123));
+        ImageTransform warpTransform = new WarpImageTransform(rng, 42);
+        boolean shuffle = false;
+        List<Pair<ImageTransform,Double>> pipeline = Arrays.asList(new Pair<>(flipTransform1,0.9),
+                                                                   new Pair<>(flipTransform2,0.8),
+                                                                   new Pair<>(warpTransform,0.5));
+
+        //noinspection ConstantConditions
+        ImageTransform transform = new PipelineImageTransform(pipeline,shuffle);
+        /*
+         * Data Setup -> normalization
+         *  - how to normalize images and generate large dataset to train on
+         */
+        DataNormalization scaler = new ImagePreProcessingScaler(0, 1);
 
         log.info("Build model....");
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(rngSeed) //include a random seed for reproducibility
-                // use stochastic gradient descent as an optimization algorithm
-                .updater(new Nesterovs(0.006, 0.9))
-                .l2(1e-4)
-                .list()
-                .layer(new DenseLayer.Builder() //create the first, input layer with xavier initialization
-                        .nIn(numRows * numColumns)
-                        .nOut(1000)
-                        .activation(Activation.RELU)
-                        .weightInit(WeightInit.XAVIER)
-                        .build())
-                .layer(new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD) //create hidden layer
-                        .nIn(1000)
-                        .nOut(outputNum)
-                        .activation(Activation.SOFTMAX)
-                        .weightInit(WeightInit.XAVIER)
-                        .build())
-                .build();
 
-        MultiLayerNetwork model = new MultiLayerNetwork(conf);
-        model.init();
-        //print the score with every 1 iteration
-        model.setListeners(new ScoreIterationListener(1));
+        // Uncomment below to try AlexNet. Note change height and width to at least 100
+//        MultiLayerNetwork network = new AlexNet(height, width, channels, numLabels, seed, iterations).init();
+
+        MultiLayerNetwork network;
+        // LeNet, AlexNet or Custom but you need to fill it out
+        String modelType = "LeNet";
+        switch (modelType) {
+            //noinspection ConstantConditions
+            case "LeNet":
+                network = lenetModel();
+                break;
+            case "AlexNet":
+                network = alexnetModel();
+                break;
+            case "custom":
+                network = customModel();
+                break;
+            default:
+                throw new InvalidInputTypeException("Incorrect model provided.");
+        }
+        network.init();
+       // network.setListeners(new ScoreIterationListener(listenerFreq));
+        UIServer uiServer = UIServer.getInstance();
+        StatsStorage statsStorage = new FileStatsStorage(new File(System.getProperty("java.io.tmpdir"), "ui-stats.dl4j"));
+        uiServer.attach(statsStorage);
+        /*
+         * Data Setup -> define how to load data into net:
+         *  - recordReader = the reader that loads and converts image data pass in inputSplit to initialize
+         *  - dataIter = a generator that only loads one batch at a time into memory to save memory
+         *  - trainIter = uses MultipleEpochsIterator to ensure model runs through the data for all epochs
+         */
+        ImageRecordReader trainRR = new ImageRecordReader(height, width, channels, labelMaker);
+        DataSetIterator trainIter;
+
 
         log.info("Train model....");
-        model.fit(mnistTrain, numEpochs);
+        // test iterator
+        ImageRecordReader testRR = new ImageRecordReader(height, width, channels, labelMaker);
+        testRR.initialize(testData);
+        DataSetIterator testIter = new RecordReaderDataSetIterator(testRR, batchSize, 1, numLabels);
+        scaler.fit(testIter);
+        testIter.setPreProcessor(scaler);
 
-        log.info("Evaluate model....");
-        Evaluation eval = model.evaluate(mnistTest);
-        log.info(eval.stats());
-        log.info("****************Example finished********************");
-        
+        // listeners
+        network.setListeners(new StatsListener( statsStorage), new ScoreIterationListener(1), new EvaluativeListener(testIter, 1, InvocationType.EPOCH_END));
 
+        // Train without transformations
+        trainRR.initialize(trainData, null);
+        trainIter = new RecordReaderDataSetIterator(trainRR, batchSize, 1, numLabels);
+        scaler.fit(trainIter);
+        trainIter.setPreProcessor(scaler);
+        network.fit(trainIter, epochs);
+
+        // Train with transformations
+        trainRR.initialize(trainData, transform);
+        trainIter = new RecordReaderDataSetIterator(trainRR, batchSize, 1, numLabels);
+        scaler.fit(trainIter);
+        trainIter.setPreProcessor(scaler);
+        network.fit(trainIter, epochs);
+
+        // Example on how to get predict results with trained model. Result for first example in minibatch is printed
+        trainIter.reset();
+        DataSet testDataSet = trainIter.next();
+        List<String> allClassLabels = trainRR.getLabels();
+        int labelIndex = testDataSet.getLabels().argMax(1).getInt(0);
+        int[] predictedClasses = network.predict(testDataSet.getFeatures());
+        String expectedResult = allClassLabels.get(labelIndex);
+        String modelPrediction = allClassLabels.get(predictedClasses[0]);
+        System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
+
+        //p5を筒子と認識できるかチェック
         /*
-        int seed        = 123;          // 乱数シード
-        int inputNum    = 2;            // 入力数
-        int outputNum   = 2;            // 出力数
-
-        
-        INDArray inputData = Nd4j.create(new float[]{1, 1, 1, 0, 0, 1, 0, 0}, new int[]{4, 2});
-        INDArray outputData = Nd4j.create(new float[]{0, 1, 0, 1, 0, 1, 0, 0}, new int[]{4, 2});
-
-        INDArray inputTestData = Nd4j.create(new float[]{1, 1, 1, 0, 0, 1, 0, 0}, new int[]{4, 2});
-        INDArray outputTestData = Nd4j.create(new float[]{0, 1, 0, 1, 0, 1, 0, 0}, new int[]{4, 2});
+        int indexOfLabel = Nd4j.argMax(network.output(new NativeImageLoader(40, 30, 1).asMatrix(new File("src/main/resources/pai_image/test/pin/p5.png")))).getInt(0);
+        System.out.println(allClassLabels.get(indexOfLabel));
         */
 
-        /*
-        double[][][] in = {{{0, 1}, {1, 0}}, {{0, 0}, {1, 1}}};
-        double[][][] out = {{{1, 0}, {1, 0}}, {{0, 0}, {1, 1}}};
-
-        int seed        = 123;          // 乱数シード
-        int inputNum    = 4;            // 入力数
-        int outputNum   = 2;            // 出力数
-
-        NativeImageLoader loader = new NativeImageLoader(40, 30);
-
-        INDArray inputData = Nd4j.create(in);
-        INDArray outputData = Nd4j.create(out);
-
-        INDArray inputTestData = Nd4j.create(in);
-        INDArray outputTestData = Nd4j.create(out);
-        
-
-        DataSet train = new DataSet(inputData, outputData);
-
-        System.out.println(train);
-
-        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-            .seed(seed) //include a random seed for reproducibility
-            // use stochastic gradient descent as an optimization algorithm
-            .updater(new Nesterovs(0.006, 0.9))
-            .l2(1e-4)
-            .list()
-            .layer(new DenseLayer.Builder() //create the first, input layer with xavier initialization
-                    .nIn(inputNum)
-                    .nOut(2)
-                    .activation(Activation.RELU)
-                    .weightInit(WeightInit.XAVIER)
-                    .build())
-            .layer(new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD) //create hidden layer
-                    .nIn(2)
-                    .nOut(outputNum)
-                    .activation(Activation.SOFTMAX)
-                    .weightInit(WeightInit.XAVIER)
-                    .build())
-            .build();
-
-        MultiLayerNetwork model = new MultiLayerNetwork(conf);
-        model.init();
-        //print the score with every 1 iteration
-        model.setListeners(new ScoreIterationListener(1));
-
-        log.info("Train model....");
-        model.fit(train);
-
-        log.info("Evaluate model....");
-        Evaluation eval = new Evaluation();
-        INDArray resultOutput = model.output(inputTestData);
-        System.out.println(resultOutput);
-        eval.eval(outputTestData, resultOutput);
-        log.info(eval.stats());
+        if (save) {
+            log.info("Save model....");
+            String basePath = FilenameUtils.concat(System.getProperty("user.dir"), "src/main/resources/model/");
+            network.save(new File(basePath + "model.bin"));
+        }
         log.info("****************Example finished********************");
-        */
     }
 
+    @SuppressWarnings("SameParameterValue")
+    private ConvolutionLayer convInit(String name, int in, int out, int[] kernel, int[] stride, int[] pad, double bias) {
+        return new ConvolutionLayer.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
+    }
+
+    private ConvolutionLayer conv3x3(String name, int out, double bias) {
+        return new ConvolutionLayer.Builder(new int[]{3,3}, new int[] {1,1}, new int[] {1,1}).name(name).nOut(out).biasInit(bias).build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private ConvolutionLayer conv5x5(String name, int out, int[] stride, int[] pad, double bias) {
+        return new ConvolutionLayer.Builder(new int[]{5,5}, stride, pad).name(name).nOut(out).biasInit(bias).build();
+    }
+
+    private SubsamplingLayer maxPool(String name,  int[] kernel) {
+        return new SubsamplingLayer.Builder(kernel, new int[]{2,2}).name(name).build();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private DenseLayer fullyConnected(String name, int out, double bias, double dropOut, Distribution dist) {
+        return new DenseLayer.Builder().name(name).nOut(out).biasInit(bias).dropOut(dropOut).weightInit(new WeightInitDistribution(dist)).build();
+    }
+
+    private MultiLayerNetwork lenetModel() {
+        /*
+         * Revisde Lenet Model approach developed by ramgo2 achieves slightly above random
+         * Reference: https://gist.github.com/ramgo2/833f12e92359a2da9e5c2fb6333351c5
+         */
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+            .seed(seed)
+            .l2(0.005)
+            .activation(Activation.RELU)
+            .weightInit(WeightInit.XAVIER)
+            .updater(new AdaDelta())
+            .list()
+            .layer(0, convInit("cnn1", channels, 50 ,  new int[]{5, 5}, new int[]{1, 1}, new int[]{0, 0}, 0))
+            .layer(1, maxPool("maxpool1", new int[]{2,2}))
+            .layer(2, conv5x5("cnn2", 100, new int[]{5, 5}, new int[]{1, 1}, 0))
+            .layer(3, maxPool("maxool2", new int[]{2,2}))
+            .layer(4, new DenseLayer.Builder().nOut(500).build())
+            .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .nOut(numLabels)
+                .activation(Activation.SOFTMAX)
+                .build())
+            .setInputType(InputType.convolutional(height, width, channels))
+            .build();
+
+        return new MultiLayerNetwork(conf);
+
+    }
+
+    private MultiLayerNetwork alexnetModel() {
+        /*
+         * AlexNet model interpretation based on the original paper ImageNet Classification with Deep Convolutional Neural Networks
+         * and the imagenetExample code referenced.
+         * http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks.pdf
+         */
+
+        double nonZeroBias = 1;
+        double dropOut = 0.5;
+
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+            .seed(seed)
+            .weightInit(new NormalDistribution(0.0, 0.01))
+            .activation(Activation.RELU)
+            .updater(new AdaDelta())
+            .gradientNormalization(GradientNormalization.RenormalizeL2PerLayer) // normalize to prevent vanishing or exploding gradients
+            .l2(5 * 1e-4)
+            .list()
+            .layer(convInit("cnn1", channels, 96, new int[]{11, 11}, new int[]{4, 4}, new int[]{3, 3}, 0))
+            .layer(new LocalResponseNormalization.Builder().name("lrn1").build())
+            .layer(maxPool("maxpool1", new int[]{3,3}))
+            .layer(conv5x5("cnn2", 256, new int[] {1,1}, new int[] {2,2}, nonZeroBias))
+            .layer(new LocalResponseNormalization.Builder().name("lrn2").build())
+            .layer(maxPool("maxpool2", new int[]{3,3}))
+            .layer(conv3x3("cnn3", 384, 0))
+            .layer(conv3x3("cnn4", 384, nonZeroBias))
+            .layer(conv3x3("cnn5", 256, nonZeroBias))
+            .layer(maxPool("maxpool3", new int[]{3,3}))
+            .layer(fullyConnected("ffn1", 4096, nonZeroBias, dropOut, new NormalDistribution(0, 0.005)))
+            .layer(fullyConnected("ffn2", 4096, nonZeroBias, dropOut, new NormalDistribution(0, 0.005)))
+            .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .name("output")
+                .nOut(numLabels)
+                .activation(Activation.SOFTMAX)
+                .build())
+            .setInputType(InputType.convolutional(height, width, channels))
+            .build();
+
+        return new MultiLayerNetwork(conf);
+
+    }
+
+    private static MultiLayerNetwork customModel() {
+        /*
+         * Use this method to build your own custom model.
+         */
+        return null;
+    }
 }

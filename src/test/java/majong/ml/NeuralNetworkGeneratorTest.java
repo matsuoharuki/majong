@@ -8,18 +8,8 @@ public class NeuralNetworkGeneratorTest {
     @Test public void testForExec() {
 
         try {
-            NeuralNetworkGenerator.exec();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    @Test public void testForExecAnimal() {
-
-        try {
-            AnimalsClassification animal = new AnimalsClassification();
-            animal.run();
+            NeuralNetworkGenerator nng = new NeuralNetworkGenerator();
+            nng.run("src/main/resources/pai_image/test/");
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
