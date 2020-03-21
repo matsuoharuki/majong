@@ -8,6 +8,10 @@ import static org.junit.Assert.*;
 
 public class MajongMainTest {
     @Test public void testMajongMain() {
+        String[] learnArgs = {"-l"};
+        MajongMain.main(learnArgs);
         
+        String[] runArgs = {"-r path"};
+        MajongMain.main(runArgs);
     }
 }

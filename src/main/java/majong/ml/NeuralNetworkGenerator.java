@@ -213,6 +213,7 @@ public class NeuralNetworkGenerator {
         network.fit(trainIter, epochs);
 
         // Example on how to get predict results with trained model. Result for first example in minibatch is printed
+        /*
         trainIter.reset();
         DataSet testDataSet = trainIter.next();
         List<String> allClassLabels = trainRR.getLabels();
@@ -220,7 +221,8 @@ public class NeuralNetworkGenerator {
         int[] predictedClasses = network.predict(testDataSet.getFeatures());
         String expectedResult = allClassLabels.get(labelIndex);
         String modelPrediction = allClassLabels.get(predictedClasses[0]);
-        //System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
+        System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
+        */
 
         //p5を筒子と認識できるかチェック
         /*

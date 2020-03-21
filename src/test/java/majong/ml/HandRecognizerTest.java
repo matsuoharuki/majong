@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
-public class ModelReaderTest {
+public class HandRecognizerTest {
 
     /**
      * 入力した牌が字牌，萬子，筒子，索子のうちどれであるかを判定する
@@ -20,7 +20,7 @@ public class ModelReaderTest {
         try {
             File modelFile = new File("src/test/resources/model/model.bin");
             File file = new File("src/test/resources/pai_image_test/pin/p5.png");
-            int result = ModelReader.useModel(file, modelFile);
+            int result = HandRecognizer.useModel(file, modelFile);
             //System.out.println(result);
             assertThat(result).isEqualTo(2);
         } catch (Exception e) {
