@@ -54,8 +54,7 @@ import static java.lang.Math.toIntExact;
 
 public class ModelReader {
 
-    public static int useModel(File file){
-        File modelFile = new File("src/main/resources/model/model.bin");
+    public static int useModel(File file, File modelFile){
         try{
             MultiLayerNetwork network = ModelSerializer.restoreMultiLayerNetwork(modelFile);
             int indexOfLabel = Nd4j.argMax(network.output(new NativeImageLoader(40, 30, 1).asMatrix(file))).getInt(0);

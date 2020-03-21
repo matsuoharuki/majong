@@ -104,7 +104,7 @@ public class NeuralNetworkGenerator {
      * @param path 学習に用いる画像データがあるディレクトリ
      * @throws Exception
      */
-    public void run(String path) throws Exception {
+    public void run(String path, String modelPath) throws Exception {
 
         dataLocalPath = path;
         /* cd
@@ -220,7 +220,7 @@ public class NeuralNetworkGenerator {
         int[] predictedClasses = network.predict(testDataSet.getFeatures());
         String expectedResult = allClassLabels.get(labelIndex);
         String modelPrediction = allClassLabels.get(predictedClasses[0]);
-        System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
+        //System.out.print("\nFor a single example that is labeled " + expectedResult + " the model predicted " + modelPrediction + "\n\n");
 
         //p5を筒子と認識できるかチェック
         /*
@@ -230,7 +230,7 @@ public class NeuralNetworkGenerator {
 
         if (save) {
             log.info("Save model....");
-            String basePath = FilenameUtils.concat(System.getProperty("user.dir"), "src/main/resources/model/");
+            String basePath = FilenameUtils.concat(System.getProperty("user.dir"), modelPath);
             network.save(new File(basePath + "model.bin"));
         }
         log.info("****************Example finished********************");

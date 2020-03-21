@@ -18,8 +18,9 @@ public class ModelReaderTest {
     @Test public void testForExec() {
 
         try {
-            File file = new File("src/main/resources/pai_image/test/pin/p5.png");
-            int result = ModelReader.useModel(file);
+            File modelFile = new File("src/test/resources/model/model.bin");
+            File file = new File("src/test/resources/pai_image_test/pin/p5.png");
+            int result = ModelReader.useModel(file, modelFile);
             //System.out.println(result);
             assertThat(result).isEqualTo(2);
         } catch (Exception e) {
