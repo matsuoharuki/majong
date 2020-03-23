@@ -19,9 +19,8 @@ public class HandRecognizerTest {
 
         try {
             File modelFile = new File("src/test/resources/model/model.bin");
-            File file = new File("src/test/resources/pai_image_test/pin/p5.png");
+            File file = new File("src/test/resources/pai_image/pai_image_test/pin/p5.png");
             int result = HandRecognizer.useModel(file, modelFile);
-            //System.out.println(result);
             assertThat(result).isEqualTo(2);
         } catch (Exception e) {
             System.err.println(e.getMessage());
